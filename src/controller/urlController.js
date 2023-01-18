@@ -1,11 +1,12 @@
 const urlModel = require('../models/ulrModel');
 const shortId = require('shortid');
 const axios = require('axios');
+const redis = require('../redis_connection/redis');
 
 exports.genrateShortUrl = async function (req, res) {
     try {
         let originalUrl = req.body.originalUrl;
-        if(originalUrl) originalUrl = originalUrl.toString().trim();
+        if (originalUrl) originalUrl = originalUrl.toString().trim();
         if (!originalUrl || originalUrl == "") return res.status(400).send({ status: false, mesaage: "Please provide url." });
         let isValid;
         await axios.get(originalUrl).then(() => { isValid = true }).catch(() => { isValid = false });
@@ -28,10 +29,13 @@ exports.genrateShortUrl = async function (req, res) {
 exports.getUrl = async function (req, res) {
     try {
         const urlCode = req.params.urlCode;
-        if(!shortId.isValid(urlCode)) return res.status(400).send({stats:false, message: "Please send valid urlCode"});
+        if (!shortId.isValid(urlCode)) return res.status(400).send({ stats: false, message: "Please send valid urlCode" });
+        const catchedData = await redis.GET(`${urlCode}`);
+        if(catchedData) return res.redirect(302, catchedData);
         const originalUrl = await urlModel.findOne({ urlCode: urlCode.toLowerCase() }).select({ _id: 0, longUrl: 1 });
         if (!originalUrl) return res.status(404).send({ status: false, message: "url not found." });
         res.redirect(302, originalUrl.longUrl);
+        await redis.SET(`${urlCode}`,24*60*60,`${originalUrl.longUrl}`);
     } catch (error) {
         res.status(500).send({ status: false, message: error.message });
     }
