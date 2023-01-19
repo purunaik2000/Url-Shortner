@@ -5,13 +5,14 @@ const redis = require('../redis_connection/redis');
 
 exports.genrateShortUrl = async function (req, res) {
     try {
-        let originalUrl = req.body.originalUrl;
+        let originalUrl = req.body.longUrl;
         if (originalUrl) originalUrl = originalUrl.toString().trim();
         if (!originalUrl || originalUrl == "") return res.status(400).send({ status: false, mesaage: "Please provide url." });
         let isValid;
         await axios.get(originalUrl).then(() => { isValid = true }).catch(() => { isValid = false });
         if (isValid == false) return res.status(400).send({ status: false, message: "Please provide valid url" });
         const data = await urlModel.findOne({ longUrl: originalUrl }).select({ _id: 0, longUrl: 1, shortUrl: 1, urlCode: 1 });
+        console.log(data.urlCode);
         if (data) return res.status(200).send({ status: true, message: "Url already genrated.", data: data });
         let urlCode = shortId.generate();
         let obj = {
