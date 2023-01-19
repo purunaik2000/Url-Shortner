@@ -16,7 +16,7 @@ exports.genrateShortUrl = async function (req, res) {
         const data = await urlModel.findOne({ longUrl: originalUrl }).select({ _id: 0, longUrl: 1, shortUrl: 1, urlCode: 1 });
         if (data){
             res.status(200).send({ status: true, message: "Url already genrated.", data: data });
-            return await redis.SET(`${data.longUrl}`,20,JSON.stringify(data));
+            return await redis.SET(`${data.longUrl}`,24*60*60,JSON.stringify(data));
         }
         let urlCode = shortId.generate();
         let obj = {
@@ -26,7 +26,7 @@ exports.genrateShortUrl = async function (req, res) {
         }
         await urlModel.create(obj);
         res.status(201).send({ status: true, message: "Url genrated.", data: obj });
-        await redis.SET(`${obj.longUrl}`,20,JSON.stringify(obj));
+        await redis.SET(`${obj.longUrl}`,24*60*60,JSON.stringify(obj));
     } catch (error) {
         res.status(500).send({ status: false, message: error.message });
     }
