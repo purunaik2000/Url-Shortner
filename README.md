@@ -1,10 +1,4 @@
-# APPLICATION LINK
-```
-https://spontaneous-liger-3b3a9e.netlify.app/
-
-```
-
-# Californium
+# URL SHORTNER [click here](https://spontaneous-liger-3b3a9e.netlify.app/)
 
 ## Scalable URL Shortner Project Requirement
 
