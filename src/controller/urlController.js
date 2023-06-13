@@ -21,7 +21,7 @@ exports.genrateShortUrl = async function (req, res) {
         let urlCode = shortId.generate();
         let obj = {
             longUrl: originalUrl,
-            shortUrl: `http://localhost:3000/${urlCode}`,
+            shortUrl: `${process.env.DOMAIN}${urlCode}`,
             urlCode: urlCode.toLowerCase()
         }
         await urlModel.create(obj);
