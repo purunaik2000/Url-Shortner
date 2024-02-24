@@ -1,4 +1,4 @@
-# URL SHORTNER [->](https://spontaneous-liger-3b3a9e.netlify.app/)
+# URL SHORTNER [click_here](https://spontaneous-liger-3b3a9e.netlify.app/)
 
 ## Scalable URL Shortner Project Requirement
 
